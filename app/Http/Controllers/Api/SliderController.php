@@ -16,7 +16,12 @@ class SliderController extends Controller
      */
     public function index()
     {
-        //
+        $sliders = Slider::all();
+
+        return response()->json([
+            'message' => 'All Slider List',
+            'data' => $sliders
+        ]);
     }
 
     /**

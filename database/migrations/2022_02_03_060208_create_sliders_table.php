@@ -19,6 +19,7 @@ class CreateSlidersTable extends Migration
             $table->string('sub_title');
             $table->longText('short_description');
             $table->string('image');
+            $table->enum('status', ['Active', 'Inactive'])->default('Inactive');
             $table->timestamps();
         });
     }

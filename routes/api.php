@@ -32,6 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     
     //  Header Route
+    Route::get('/sliders', [SliderController::class, 'index']);
     Route::post('/slider/create', [SliderController::class, 'store']);
     Route::post('/slider/update/{id}', [SliderController::class, 'update']);
     Route::post('/slider/delete/{id}', [SliderController::class, 'destroy']);
