@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Skill;
+use App\Models\ProjectCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class SkillController extends Controller
+class ProjectCategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,11 +16,11 @@ class SkillController extends Controller
      */
     public function index()
     {
-        $skills = Skill::all();
+        $categories = ProjectCategory::all();
 
         return response()->json([
-            'message' => 'All Skill List',
-            'data' => $skills
+            'message' => 'All category List',
+            'data' => $categories
         ]);
     }
 
@@ -33,8 +33,7 @@ class SkillController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'skill_name' => 'required|unique:skills',
-            'skill_percentage' => 'required|numeric',
+            'name' => 'required|unique:project_categories',
         ]);
 
         if ($validator->fails()) {
@@ -43,15 +42,13 @@ class SkillController extends Controller
             ], 422);
         }
 
-        $skill = new Skill();
-
-        $skill->skill_name = $request->skill_name;
-        $skill->skill_percentage = $request->skill_percentage;
-        $skill->save();
+        $category = new ProjectCategory();
+        $category->name = $request->name;
+        $category->save();
         
         return response()->json([
-            'message' => 'Skill Added Successfull',
-            'data' =>  $skill,
+            'message' => 'Category Added Successfull',
+            'data' =>  $category,
         ], 200);
     }
 
@@ -76,8 +73,7 @@ class SkillController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'skill_name' => 'required|unique:skills,id',
-            'skill_percentage' => 'required|numeric',
+            'name' => 'required|unique:project_categories,id',
         ]);
 
         if ($validator->fails()) {
@@ -86,15 +82,15 @@ class SkillController extends Controller
             ], 422);
         }
 
-        $skill_update = Skill::find($id);
+        $categories_update = ProjectCategory::find($id);
 
-        $skill_update->skill_name = $request->skill_name;
-        $skill_update->skill_percentage = $request->skill_percentage;
-        $skill_update->save();
+      
+        $categories_update->name = $request->name;
+        $categories_update->save();
         
         return response()->json([
-            'message' => 'Skill Updated Successfull',
-            'data' =>  $skill_update,
+            'message' => 'Category Updated Successfull',
+            'data' =>  $categories_update,
         ], 200);
     }
 
@@ -106,12 +102,14 @@ class SkillController extends Controller
      */
     public function destroy($id)
     {
-        $skill = Skill::find($id);
+        $category = ProjectCategory::find($id);
 
-        if ($skill) {
-            $skill->delete();
+        if ($category) {
+            
+            $category->delete();
+
             return response()->json([
-                'message' => 'Skill Deleted Successfull..!!',
+                'message' => 'Category Deleted Successfull..!!',
             ], 200);
         }else{
             return response()->json([

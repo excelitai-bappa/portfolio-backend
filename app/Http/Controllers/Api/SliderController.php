@@ -52,7 +52,7 @@ class SliderController extends Controller
             $extension = $image->extension();
             $name = time().'.'.$extension;
             $image->move(public_path('/upload/sliders/'), $name);
-            $path = '/upload/sliders/'.$name;
+            $path = 'upload/sliders/'.$name;
         }
 
         $slider->title = $request->title;
@@ -106,10 +106,11 @@ class SliderController extends Controller
 
         if ($request->hasFile('image')) {
 
-            $destination = public_path('upload/sliders/' .$slider_update->image);
-
+            $destination = public_path($slider_update->image);
+            
             if (file_exists($destination)) {
                 unlink($destination);
+                
             }
 
 
@@ -117,7 +118,7 @@ class SliderController extends Controller
             $extension = $image->extension();
             $name = time().'.'.$extension;
             $image->move(public_path('/upload/sliders/'), $name);
-            $path = '/upload/sliders/'.$name;
+            $path = 'upload/sliders/'.$name;
         }
 
         $slider_update->title = $request->title;
@@ -145,7 +146,14 @@ class SliderController extends Controller
         $slider = Slider::find($id);
 
         if ($slider) {
+            
             $slider->delete();
+            $destination = public_path($slider->image);
+
+            if (file_exists($destination)) {
+                unlink($destination);
+            }
+
             return response()->json([
                 'message' => 'Slider Deleted Successfull..!!',
             ], 200);

@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Skill;
+use App\Models\Faq;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class SkillController extends Controller
+class FaqController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,11 +16,11 @@ class SkillController extends Controller
      */
     public function index()
     {
-        $skills = Skill::all();
+        $faq = Faq::all();
 
         return response()->json([
-            'message' => 'All Skill List',
-            'data' => $skills
+            'message' => 'All FAQ List',
+            'data' => $faq
         ]);
     }
 
@@ -33,8 +33,8 @@ class SkillController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'skill_name' => 'required|unique:skills',
-            'skill_percentage' => 'required|numeric',
+            'question' => 'required',
+            'answer' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -43,15 +43,15 @@ class SkillController extends Controller
             ], 422);
         }
 
-        $skill = new Skill();
+        $faq = new Faq();
 
-        $skill->skill_name = $request->skill_name;
-        $skill->skill_percentage = $request->skill_percentage;
-        $skill->save();
+        $faq->question = $request->question;
+        $faq->answer = $request->answer;
+        $faq->save();
         
         return response()->json([
-            'message' => 'Skill Added Successfull',
-            'data' =>  $skill,
+            'message' => 'Faq Added Successfull',
+            'data' =>  $faq,
         ], 200);
     }
 
@@ -76,8 +76,8 @@ class SkillController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'skill_name' => 'required|unique:skills,id',
-            'skill_percentage' => 'required|numeric',
+            'question' => 'required',
+            'answer' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -86,15 +86,15 @@ class SkillController extends Controller
             ], 422);
         }
 
-        $skill_update = Skill::find($id);
+        $faq_update = Faq::find($id);
 
-        $skill_update->skill_name = $request->skill_name;
-        $skill_update->skill_percentage = $request->skill_percentage;
-        $skill_update->save();
+        $faq_update->question = $request->question;
+        $faq_update->answer = $request->answer;
+        $faq_update->save();
         
         return response()->json([
-            'message' => 'Skill Updated Successfull',
-            'data' =>  $skill_update,
+            'message' => 'Faq Updated Successfull',
+            'data' =>  $faq_update,
         ], 200);
     }
 
@@ -106,12 +106,12 @@ class SkillController extends Controller
      */
     public function destroy($id)
     {
-        $skill = Skill::find($id);
+        $faq = Faq::find($id);
 
-        if ($skill) {
-            $skill->delete();
+        if ($faq) {
+            $faq->delete();
             return response()->json([
-                'message' => 'Skill Deleted Successfull..!!',
+                'message' => 'Faq Deleted Successfull..!!',
             ], 200);
         }else{
             return response()->json([
