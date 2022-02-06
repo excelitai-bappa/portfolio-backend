@@ -24,6 +24,22 @@ class ProjectCategoryController extends Controller
         ]);
     }
 
+    public function activeCategoryData()
+    {
+        $active_category = ProjectCategory::where('status', 'Active')->orderBy('id', 'DESC')->get();
+
+        if ($active_category) {
+            return response()->json([
+                'message' => 'All Active Category List',
+                'data' => $active_category
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'No Data Availble'
+            ]);
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -73,7 +89,7 @@ class ProjectCategoryController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|unique:project_categories,id',
+            'name' => 'required|unique:project_categories,name,'.$id,
         ]);
 
         if ($validator->fails()) {
@@ -116,6 +132,24 @@ class ProjectCategoryController extends Controller
                 'message' => 'Deleted Failed',
             ], 400);
         }
+    }
+     
+    public function changeStatus(Request $request, $id)
+    {
+        $category = ProjectCategory::find($id);
+
+        if ($category->status == 'Active') {
+            $category->status = 'Inactive';
+            $category->save();
+        }elseif($category->status == 'Inactive'){
+            $category->status = 'Active';
+            $category->save();
+        }
+
+        return response()->json([
+            'message' => 'Status Changed Successfully..!!',
+            'data' => $category,
+        ], 200);
     }
 }
 

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateHeadersTable extends Migration
+class CreateBlogCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class CreateHeadersTable extends Migration
      */
     public function up()
     {
-        Schema::create('headers', function (Blueprint $table) {
+        Schema::create('blog_categories', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->enum('status', ['Active', 'Inactive'])->default('Inactive');
             $table->timestamps();
         });
     }
@@ -26,6 +28,6 @@ class CreateHeadersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('headers');
+        Schema::dropIfExists('blog_categories');
     }
 }

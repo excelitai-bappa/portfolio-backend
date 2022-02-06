@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Subscribe;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
-class FooterController extends Controller
+class SubscribeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -25,7 +27,25 @@ class FooterController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|unique:subscribes',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $subscribe = new Subscribe();
+
+        $subscribe->email = $request->email;
+        $subscribe->save();
+        
+        return response()->json([
+            'message' => 'Subscribe Successfully Done',
+            'data' =>  $subscribe,
+        ], 200);
     }
 
     /**

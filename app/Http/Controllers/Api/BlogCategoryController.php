@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Service;
+use App\Models\BlogCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class ServiceController extends Controller
+class BlogCategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,22 +16,22 @@ class ServiceController extends Controller
      */
     public function index()
     {
-        $services = Service::all();
+        $categories = BlogCategory::all();
 
         return response()->json([
-            'message' => 'All service List',
-            'data' => $services
+            'message' => 'All category List',
+            'data' => $categories
         ]);
     }
 
-    public function activeServiceData()
+    public function activeCategoryData()
     {
-        $active_service = Service::where('status', 'Active')->orderBy('id', 'DESC')->get();
+        $active_category = BlogCategory::where('status', 'Active')->orderBy('id', 'DESC')->get();
 
-        if ($active_service) {
+        if ($active_category) {
             return response()->json([
-                'message' => 'All Active Service List',
-                'data' => $active_service
+                'message' => 'All Active Category List',
+                'data' => $active_category
             ]);
         }else{
             return response()->json([
@@ -49,8 +49,7 @@ class ServiceController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|unique:services',
-            'icon_url' => 'required',
+            'name' => 'required|unique:blog_categories',
         ]);
 
         if ($validator->fails()) {
@@ -59,15 +58,13 @@ class ServiceController extends Controller
             ], 422);
         }
 
-        $service = new Service();
-
-        $service->name = $request->name;
-        $service->icon_url = $request->icon_url;
-        $service->save();
+        $blog_category = new BlogCategory();
+        $blog_category->name = $request->name;
+        $blog_category->save();
         
         return response()->json([
-            'message' => 'Service Added Successfull',
-            'data' =>  $service,
+            'message' => 'Category Added Successfull',
+            'data' =>  $blog_category,
         ], 200);
     }
 
@@ -92,8 +89,7 @@ class ServiceController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|unique:services,name,'.$id,
-            'icon_url' => 'required',
+            'name' => 'required|unique:blog_categories,name,'.$id,
         ]);
 
         if ($validator->fails()) {
@@ -102,16 +98,15 @@ class ServiceController extends Controller
             ], 422);
         }
 
-        $services_update = Service::find($id);
+        $categories_update = BlogCategory::find($id);
 
       
-        $services_update->name = $request->name;
-        $services_update->icon_url = $request->icon_url;
-        $services_update->save();
+        $categories_update->name = $request->name;
+        $categories_update->save();
         
         return response()->json([
-            'message' => 'service Updated Successfull',
-            'data' =>  $services_update,
+            'message' => 'Category Updated Successfull',
+            'data' =>  $categories_update,
         ], 200);
     }
 
@@ -123,14 +118,14 @@ class ServiceController extends Controller
      */
     public function destroy($id)
     {
-        $service = Service::find($id);
+        $category = BlogCategory::find($id);
 
-        if ($service) {
+        if ($category) {
             
-            $service->delete();
+            $category->delete();
 
             return response()->json([
-                'message' => 'Service Deleted Successfull..!!',
+                'message' => 'Category Deleted Successfull..!!',
             ], 200);
         }else{
             return response()->json([
@@ -138,22 +133,23 @@ class ServiceController extends Controller
             ], 400);
         }
     }
-
+     
     public function changeStatus(Request $request, $id)
     {
-        $service = Service::find($id);
+        $blog_category_status = BlogCategory::find($id);
 
-        if ($service->status == 'Active') {
-            $service->status = 'Inactive';
-            $service->save();
-        }elseif($service->status == 'Inactive'){
-            $service->status = 'Active';
-            $service->save();
+        if ($blog_category_status->status == 'Active') {
+            $blog_category_status->status = 'Inactive';
+            $blog_category_status->save();
+        }elseif($blog_category_status->status == 'Inactive'){
+            $blog_category_status->status = 'Active';
+            $blog_category_status->save();
         }
 
         return response()->json([
             'message' => 'Status Changed Successfully..!!',
-            'data' => $service,
+            'data' => $blog_category_status,
         ], 200);
     }
 }
+

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\SlidersResource;
 use App\Models\Slider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -16,12 +17,29 @@ class SliderController extends Controller
      */
     public function index()
     {
-        $sliders = Slider::all();
+        $sliders = SlidersResource::collection(Slider::all());
 
         return response()->json([
             'message' => 'All Slider List',
             'data' => $sliders
         ]);
+    }
+
+    public function activeSliderData()
+    {
+        $active_slider = SlidersResource::collection( Slider::where('status', 'Active')->orderBy('id', 'DESC')->get());
+
+        if ($active_slider) {
+            return response()->json([
+                'message' => 'All Active Slider List',
+                'data' => $active_slider
+            ]);
+        }
+        else{
+            return response()->json([
+                'message' => 'No Data Availble'
+            ]);
+        }
     }
 
     /**
@@ -162,5 +180,23 @@ class SliderController extends Controller
                 'message' => 'Deleted Failed',
             ], 400);
         }
+    }
+    
+    public function changeStatus(Request $request, $id)
+    {
+        $slider = Slider::find($id);
+
+        if ($slider->status == 'Active') {
+            $slider->status = 'Inactive';
+            $slider->save();
+        }elseif($slider->status == 'Inactive'){
+            $slider->status = 'Active';
+            $slider->save();
+        }
+
+        return response()->json([
+            'message' => 'Status Changed Successfully..!!',
+            'data' => $slider,
+        ], 200);
     }
 }

@@ -24,6 +24,22 @@ class SkillController extends Controller
         ]);
     }
 
+    public function activeSkillData()
+    {
+        $active_skill = Skill::where('status', 'Active')->orderBy('id', 'DESC')->get();
+
+        if($active_skill){
+            return response()->json([
+                'message' => 'All Active Skill List',
+                'data' => $active_skill
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'No Data Availble'
+            ]);
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -76,7 +92,7 @@ class SkillController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'skill_name' => 'required|unique:skills,id',
+            'skill_name' => 'required|unique:skills,skill_name,'.$id,
             'skill_percentage' => 'required|numeric',
         ]);
 
@@ -118,6 +134,24 @@ class SkillController extends Controller
                 'message' => 'Deleted Failed',
             ], 400);
         }
+    }
+    
+    public function changeStatus(Request $request, $id)
+    {
+        $skill = Skill::find($id);
+
+        if ($skill->status == 'Active') {
+            $skill->status = 'Inactive';
+            $skill->save();
+        }elseif($skill->status == 'Inactive'){
+            $skill->status = 'Active';
+            $skill->save();
+        }
+
+        return response()->json([
+            'message' => 'Status Changed Successfully..!!',
+            'data' => $skill,
+        ], 200);
     }
 }
 

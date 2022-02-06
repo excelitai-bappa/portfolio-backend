@@ -15,17 +15,17 @@ class CreateSettingsTable extends Migration
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('create_by');
-            $table->string('name', 100);
-            $table->string('logo', 100);
-            $table->string('favicon', 100);
-            $table->string('email', 100);
+            $table->string('name');
+            $table->string('logo');
+            $table->string('favicon');
+            $table->string('email');
             $table->string('mobile', 11);
+            $table->string('address');
             $table->string('fb_link')->nullable();
-            $table->string('youtube_link')->nullable();
+            $table->string('twitter_link')->nullable();
+            $table->string('linekdin_link')->nullable();
             $table->timestamps();
             
-            $table->foreign('create_by')->references('id')->on('users');
         });
     }
 

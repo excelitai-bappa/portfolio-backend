@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TestimonialResource;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -16,12 +17,29 @@ class TestimonialController extends Controller
      */
     public function index()
     {
-        $testimonials = Testimonial::all();
+        $testimonials = TestimonialResource::collection(Testimonial::all());
 
         return response()->json([
             'message' => 'All Testimonial List',
             'data' => $testimonials
         ]);
+    }
+
+    public function activeTestimonialData()
+    {
+        $active_testimonial = TestimonialResource::collection(Testimonial::where('status', 'Active')->orderBy('id', 'DESC')->get());
+
+        if ($active_testimonial) {
+            return response()->json([
+                'message' => 'All Active Testimonial List',
+                'data' => $active_testimonial
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'No Data Availble'
+            ]);
+        }
+        
     }
 
     /**
@@ -158,6 +176,24 @@ class TestimonialController extends Controller
                 'message' => 'Deleted Failed',
             ], 400);
         }
+    }
+
+    public function changeStatus(Request $request, $id)
+    {
+        $testimonial = Testimonial::find($id);
+
+        if ($testimonial->status == 'Active') {
+            $testimonial->status = 'Inactive';
+            $testimonial->save();
+        }elseif($testimonial->status == 'Inactive'){
+            $testimonial->status = 'Active';
+            $testimonial->save();
+        }
+
+        return response()->json([
+            'message' => 'Status Changed Successfully..!!',
+            'data' => $testimonial,
+        ], 200);
     }
 }
 

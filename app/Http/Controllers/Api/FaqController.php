@@ -24,6 +24,22 @@ class FaqController extends Controller
         ]);
     }
 
+    public function activeFaqData()
+    {
+        $active_faq_data = Faq::where('status', 'Active')->orderBy('id', 'DESC')->get();
+
+        if ($active_faq_data) {
+            return response()->json([
+                'message' => 'All FAQ List',
+                'data' => $active_faq_data
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'No Data Availble'
+            ]);
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -76,7 +92,7 @@ class FaqController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'question' => 'required',
+            'question' => 'required|unique:faqs,name,'.$id,
             'answer' => 'required',
         ]);
 
@@ -118,6 +134,24 @@ class FaqController extends Controller
                 'message' => 'Deleted Failed',
             ], 400);
         }
+    }
+    
+    public function changeStatus(Request $request, $id)
+    {
+        $faq = Faq::find($id);
+
+        if ($faq->status == 'Active') {
+            $faq->status = 'Inactive';
+            $faq->save();
+        }elseif($faq->status == 'Inactive'){
+            $faq->status = 'Active';
+            $faq->save();
+        }
+
+        return response()->json([
+            'message' => 'Status Changed Successfully..!!',
+            'data' => $faq,
+        ], 200);
     }
 }
 

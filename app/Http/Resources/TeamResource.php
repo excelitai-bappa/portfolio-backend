@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class SlidersResource extends JsonResource
+class TeamResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,16 +16,19 @@ class SlidersResource extends JsonResource
     {
         $image = $this->image;
         if($image){
-            $image = asset('upload/sliders/'.$this->image);
+            $image = asset('upload/teams/'.$this->image);
         }else{
             $image = NULL;
         }
 
         return [
             'id' => $this->id,
-            'title'=> $this->title,
-            'sub_title'=> $this->sub_title,
-            'short_description'=> $this->short_description,
+            'name'=> $this->name,
+            'designation'=> $this->designation,
+            'fb_url'=> $this->fb_url,
+            'twitter_url'=> $this->twitter_url,
+            'linkedin_url'=> $this->linkedin_url,
+            'insta_url'=> $this->insta_url,
             'image'=> $image,
         ];
     }

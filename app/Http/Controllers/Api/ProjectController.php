@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ProjectResource;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -16,12 +17,28 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::all();
+        $projects = ProjectResource::collection(Project::all());
 
         return response()->json([
             'message' => 'All Project List',
             'data' => $projects
         ]);
+    }
+
+    public function activeProjectData()
+    {
+        $active_project = ProjectResource::collection(Project::where('status', 'Active')->orderBy('id', 'DESC')->get());
+
+        if ($active_project) {
+            return response()->json([
+                'message' => 'All Active Project List',
+                'data' => $active_project
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'No Data Availble'
+            ]);
+        }
     }
 
     /**
@@ -39,7 +56,6 @@ class ProjectController extends Controller
             'project_thumbnail' => 'required|image|mimes:jpeg,png,jpg',
             'project_image' => 'required|image|mimes:jpeg,png,jpg',
             'start_date' => 'required',
-            'end_date' => 'required',
             'end_date' => 'required',
             'website_url' => 'required',
         ]);								
@@ -109,7 +125,6 @@ class ProjectController extends Controller
             'project_thumbnail' => 'required|image|mimes:jpeg,png,jpg',
             'project_image' => 'required|image|mimes:jpeg,png,jpg',
             'start_date' => 'required',
-            'end_date' => 'required',
             'end_date' => 'required',
             'website_url' => 'required',
         ]);
@@ -197,5 +212,23 @@ class ProjectController extends Controller
                 'message' => 'Deleted Failed',
             ], 400);
         }
+    }
+    
+    public function changeStatus(Request $request, $id)
+    {
+        $project = Project::find($id);
+
+        if ($project->status == 'Active') {
+            $project->status = 'Inactive';
+            $project->save();
+        }elseif($project->status == 'Inactive'){
+            $project->status = 'Active';
+            $project->save();
+        }
+
+        return response()->json([
+            'message' => 'Status Changed Successfully..!!',
+            'data' => $project,
+        ], 200);
     }
 }

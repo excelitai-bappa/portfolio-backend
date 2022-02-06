@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TeamResource;
 use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -16,12 +17,29 @@ class TeamController extends Controller
      */
     public function index()
     {
-        $teams = Team::all();
+        $teams = TeamResource::collection(Team::all());
 
         return response()->json([
             'message' => 'All Team List',
             'data' => $teams
         ]);
+    }
+
+    public function activeTeamData()
+    {
+        $active_team = TeamResource::collection(Team::where('status', 'Active')->orderBy('id', 'DESC')->get());
+
+        if ($active_team) {
+            return response()->json([
+                'message' => 'All Active Team List',
+                'data' => $active_team
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'No Data Availble'
+            ]);
+        }
+        
     }
 
     /**
@@ -171,5 +189,23 @@ class TeamController extends Controller
                 'message' => 'Deleted Failed',
             ], 400);
         }
+    }
+    
+    public function changeStatus(Request $request, $id)
+    {
+        $team = Team::find($id);
+
+        if ($team->status == 'Active') {
+            $team->status = 'Inactive';
+            $team->save();
+        }elseif($team->status == 'Inactive'){
+            $team->status = 'Active';
+            $team->save();
+        }
+
+        return response()->json([
+            'message' => 'Status Changed Successfully..!!',
+            'data' => $team,
+        ], 200);
     }
 }

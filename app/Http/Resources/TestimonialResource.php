@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class SlidersResource extends JsonResource
+class TestimonialResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,18 +14,19 @@ class SlidersResource extends JsonResource
      */
     public function toArray($request)
     {
+
         $image = $this->image;
         if($image){
-            $image = asset('upload/sliders/'.$this->image);
+            $image = asset('upload/testimonials/'.$this->image);
         }else{
             $image = NULL;
         }
 
         return [
             'id' => $this->id,
-            'title'=> $this->title,
-            'sub_title'=> $this->sub_title,
-            'short_description'=> $this->short_description,
+            'statement'=> $this->statement,
+            'name'=> $this->name,
+            'designation'=> $this->designation,
             'image'=> $image,
         ];
     }
