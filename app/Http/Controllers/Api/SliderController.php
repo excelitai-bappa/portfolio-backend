@@ -21,23 +21,26 @@ class SliderController extends Controller
 
         return response()->json([
             'message' => 'All Slider List',
-            'data' => $sliders
+            'data' => $sliders,
         ]);
     }
 
     public function activeSliderData()
     {
-        $active_slider = SlidersResource::collection( Slider::where('status', 'Active')->orderBy('id', 'DESC')->get());
+        $active_slider = SlidersResource::collection(
+            Slider::where('status', 'Active')
+                ->orderBy('id', 'DESC')
+                ->get()
+        );
 
         if ($active_slider) {
             return response()->json([
                 'message' => 'All Active Slider List',
-                'data' => $active_slider
+                'data' => $active_slider,
             ]);
-        }
-        else{
+        } else {
             return response()->json([
-                'message' => 'No Data Availble'
+                'message' => 'No Data Availble',
             ]);
         }
     }
@@ -58,9 +61,12 @@ class SliderController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors(),
-            ], 422);
+            return response()->json(
+                [
+                    'errors' => $validator->errors(),
+                ],
+                422
+            );
         }
 
         $slider = new Slider();
@@ -68,9 +74,9 @@ class SliderController extends Controller
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $extension = $image->extension();
-            $name = time().'.'.$extension;
+            $name = time() . '.' . $extension;
             $image->move(public_path('/upload/sliders/'), $name);
-            $path = 'upload/sliders/'.$name;
+            $path = 'upload/sliders/' . $name;
         }
 
         $slider->title = $request->title;
@@ -78,13 +84,15 @@ class SliderController extends Controller
         $slider->short_description = $request->short_description;
         $slider->image = $path;
 
-
         $slider->save();
-        
-        return response()->json([
-            'message' => 'Slider Added Successfull',
-            'data' =>  $slider,
-        ], 200);
+
+        return response()->json(
+            [
+                'message' => 'Slider Added Successfull',
+                'data' => $slider,
+            ],
+            200
+        );
     }
 
     /**
@@ -95,7 +103,19 @@ class SliderController extends Controller
      */
     public function show($id)
     {
-        //
+        $slider = new SlidersResource(Slider::find($id));
+
+        if ($slider) {
+            return response()->json([
+                'message' => 'Slider Information',
+                'data' => $slider,
+            ], 200);
+        }else{
+            return response()->json([
+                'message' => 'Slider Information Failed',
+            ], 400);
+        }
+        
     }
 
     /**
@@ -115,28 +135,28 @@ class SliderController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors(),
-            ], 422);
+            return response()->json(
+                [
+                    'errors' => $validator->errors(),
+                ],
+                422
+            );
         }
 
         $slider_update = Slider::find($id);
 
         if ($request->hasFile('image')) {
-
             $destination = public_path($slider_update->image);
-            
+
             if (file_exists($destination)) {
                 unlink($destination);
-                
             }
-
 
             $image = $request->file('image');
             $extension = $image->extension();
-            $name = time().'.'.$extension;
+            $name = time() . '.' . $extension;
             $image->move(public_path('/upload/sliders/'), $name);
-            $path = 'upload/sliders/'.$name;
+            $path = 'upload/sliders/' . $name;
         }
 
         $slider_update->title = $request->title;
@@ -144,13 +164,15 @@ class SliderController extends Controller
         $slider_update->short_description = $request->short_description;
         $slider_update->image = $path;
 
-
         $slider_update->save();
-        
-        return response()->json([
-            'message' => 'Slider Updated Successfull',
-            'data' =>  $slider_update,
-        ], 200);
+
+        return response()->json(
+            [
+                'message' => 'Slider Updated Successfull',
+                'data' => $slider_update,
+            ],
+            200
+        );
     }
 
     /**
@@ -164,7 +186,6 @@ class SliderController extends Controller
         $slider = Slider::find($id);
 
         if ($slider) {
-            
             $slider->delete();
             $destination = public_path($slider->image);
 
@@ -172,16 +193,22 @@ class SliderController extends Controller
                 unlink($destination);
             }
 
-            return response()->json([
-                'message' => 'Slider Deleted Successfull..!!',
-            ], 200);
-        }else{
-            return response()->json([
-                'message' => 'Deleted Failed',
-            ], 400);
+            return response()->json(
+                [
+                    'message' => 'Slider Deleted Successfull..!!',
+                ],
+                200
+            );
+        } else {
+            return response()->json(
+                [
+                    'message' => 'Deleted Failed',
+                ],
+                400
+            );
         }
     }
-    
+
     public function changeStatus(Request $request, $id)
     {
         $slider = Slider::find($id);
@@ -189,14 +216,17 @@ class SliderController extends Controller
         if ($slider->status == 'Active') {
             $slider->status = 'Inactive';
             $slider->save();
-        }elseif($slider->status == 'Inactive'){
+        } elseif ($slider->status == 'Inactive') {
             $slider->status = 'Active';
             $slider->save();
         }
 
-        return response()->json([
-            'message' => 'Status Changed Successfully..!!',
-            'data' => $slider,
-        ], 200);
+        return response()->json(
+            [
+                'message' => 'Status Changed Successfully..!!',
+                'data' => $slider,
+            ],
+            200
+        );
     }
 }
