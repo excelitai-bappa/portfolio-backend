@@ -101,7 +101,18 @@ class TeamController extends Controller
      */
     public function show($id)
     {
-        //
+        $team = Team::find($id);
+
+        if ($team) {
+            return response()->json([
+                'message' => 'Team Information',
+                'data' => $team,
+            ], 200);
+        }else{
+            return response()->json([
+                'message' => 'Team Failed',
+            ], 400);
+        }
     }
 
     /**

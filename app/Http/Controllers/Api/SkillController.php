@@ -79,7 +79,19 @@ class SkillController extends Controller
      */
     public function show($id)
     {
-        //
+        $skill = Skill::find($id);
+
+        if ($skill) {
+            return response()->json([
+                'message' => 'Skill Information',
+                'data' => $skill,
+            ], 200);
+        }else{
+            return response()->json([
+                'message' => 'Skill Failed',
+            ], 400);
+        }
+        
     }
 
     /**

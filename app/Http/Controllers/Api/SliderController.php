@@ -106,16 +106,21 @@ class SliderController extends Controller
         $slider = new SlidersResource(Slider::find($id));
 
         if ($slider) {
-            return response()->json([
-                'message' => 'Slider Information',
-                'data' => $slider,
-            ], 200);
-        }else{
-            return response()->json([
-                'message' => 'Slider Information Failed',
-            ], 400);
+            return response()->json(
+                [
+                    'message' => 'Slider Information',
+                    'data' => $slider,
+                ],
+                200
+            );
+        } else {
+            return response()->json(
+                [
+                    'message' => 'Slider Information Failed',
+                ],
+                400
+            );
         }
-        
     }
 
     /**
@@ -127,11 +132,11 @@ class SliderController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // return response($request->all());
         $validator = Validator::make($request->all(), [
             'title' => 'required',
             'sub_title' => 'required',
             'short_description' => 'required',
-            'image' => 'required|image|mimes:jpeg,png,jpg',
         ]);
 
         if ($validator->fails()) {
@@ -145,10 +150,16 @@ class SliderController extends Controller
 
         $slider_update = Slider::find($id);
 
+        $data = [
+            'title' => $request->title,
+            'sub_title' => $request->sub_title,
+            'short_description' => $request->short_description,
+        ];
+
         if ($request->hasFile('image')) {
             $destination = public_path($slider_update->image);
 
-            if (file_exists($destination)) {
+            if ($slider_update->image && file_exists($destination)) {
                 unlink($destination);
             }
 
@@ -157,14 +168,10 @@ class SliderController extends Controller
             $name = time() . '.' . $extension;
             $image->move(public_path('/upload/sliders/'), $name);
             $path = 'upload/sliders/' . $name;
+            $data['image'] = $path;
         }
 
-        $slider_update->title = $request->title;
-        $slider_update->sub_title = $request->sub_title;
-        $slider_update->short_description = $request->short_description;
-        $slider_update->image = $path;
-
-        $slider_update->save();
+        $slider_update->update($data);
 
         return response()->json(
             [

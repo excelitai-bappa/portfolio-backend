@@ -76,7 +76,19 @@ class ProjectCategoryController extends Controller
      */
     public function show($id)
     {
-        //
+        $ProjectCategory = ProjectCategory::find($id);
+
+        if ($ProjectCategory) {
+            return response()->json([
+                'message' => 'FAQ Information',
+                'data' => $ProjectCategory,
+            ], 200);
+        }else{
+            return response()->json([
+                'message' => 'FAQ Failed',
+            ], 400);
+        }
+        
     }
 
     /**

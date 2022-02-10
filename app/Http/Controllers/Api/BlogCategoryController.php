@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\BlogResource;
+use App\Models\Blog;
 use App\Models\BlogCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -20,22 +22,24 @@ class BlogCategoryController extends Controller
 
         return response()->json([
             'message' => 'All category List',
-            'data' => $categories
+            'data' => $categories,
         ]);
     }
 
     public function activeCategoryData()
     {
-        $active_category = BlogCategory::where('status', 'Active')->orderBy('id', 'DESC')->get();
+        $active_category = BlogCategory::where('status', 'Active')
+            ->orderBy('id', 'DESC')
+            ->get();
 
         if ($active_category) {
             return response()->json([
                 'message' => 'All Active Category List',
-                'data' => $active_category
+                'data' => $active_category,
             ]);
-        }else{
+        } else {
             return response()->json([
-                'message' => 'No Data Availble'
+                'message' => 'No Data Availble',
             ]);
         }
     }
@@ -53,19 +57,25 @@ class BlogCategoryController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors(),
-            ], 422);
+            return response()->json(
+                [
+                    'errors' => $validator->errors(),
+                ],
+                422
+            );
         }
 
         $blog_category = new BlogCategory();
         $blog_category->name = $request->name;
         $blog_category->save();
-        
-        return response()->json([
-            'message' => 'Category Added Successfull',
-            'data' =>  $blog_category,
-        ], 200);
+
+        return response()->json(
+            [
+                'message' => 'Category Added Successfull',
+                'data' => $blog_category,
+            ],
+            200
+        );
     }
 
     /**
@@ -76,7 +86,19 @@ class BlogCategoryController extends Controller
      */
     public function show($id)
     {
-        //
+        $blogCategory = BlogCategory::find($id);
+
+        if ($blogCategory) {
+            return response()->json([
+                'message' => 'Blog Category Information',
+                'data' => $blogCategory,
+            ], 200);
+        }else{
+            return response()->json([
+                'message' => 'Blog Information Failed',
+            ], 400);
+        }
+        
     }
 
     /**
@@ -89,25 +111,30 @@ class BlogCategoryController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|unique:blog_categories,name,'.$id,
+            'name' => 'required|unique:blog_categories,name,' . $id,
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors(),
-            ], 422);
+            return response()->json(
+                [
+                    'errors' => $validator->errors(),
+                ],
+                422
+            );
         }
 
         $categories_update = BlogCategory::find($id);
 
-      
         $categories_update->name = $request->name;
         $categories_update->save();
-        
-        return response()->json([
-            'message' => 'Category Updated Successfull',
-            'data' =>  $categories_update,
-        ], 200);
+
+        return response()->json(
+            [
+                'message' => 'Category Updated Successfull',
+                'data' => $categories_update,
+            ],
+            200
+        );
     }
 
     /**
@@ -121,19 +148,24 @@ class BlogCategoryController extends Controller
         $category = BlogCategory::find($id);
 
         if ($category) {
-            
             $category->delete();
 
-            return response()->json([
-                'message' => 'Category Deleted Successfull..!!',
-            ], 200);
-        }else{
-            return response()->json([
-                'message' => 'Deleted Failed',
-            ], 400);
+            return response()->json(
+                [
+                    'message' => 'Category Deleted Successfull..!!',
+                ],
+                200
+            );
+        } else {
+            return response()->json(
+                [
+                    'message' => 'Deleted Failed',
+                ],
+                400
+            );
         }
     }
-     
+
     public function changeStatus(Request $request, $id)
     {
         $blog_category_status = BlogCategory::find($id);
@@ -141,15 +173,17 @@ class BlogCategoryController extends Controller
         if ($blog_category_status->status == 'Active') {
             $blog_category_status->status = 'Inactive';
             $blog_category_status->save();
-        }elseif($blog_category_status->status == 'Inactive'){
+        } elseif ($blog_category_status->status == 'Inactive') {
             $blog_category_status->status = 'Active';
             $blog_category_status->save();
         }
 
-        return response()->json([
-            'message' => 'Status Changed Successfully..!!',
-            'data' => $blog_category_status,
-        ], 200);
+        return response()->json(
+            [
+                'message' => 'Status Changed Successfully..!!',
+                'data' => $blog_category_status,
+            ],
+            200
+        );
     }
 }
-

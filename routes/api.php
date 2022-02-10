@@ -74,6 +74,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //  Service Route
     Route::get('/services', [ServiceController::class, 'index']);
     Route::post('/service/create', [ServiceController::class, 'store']);
+    Route::get('/service/show/{id}', [ServiceController::class, 'show']);
     Route::post('/service/update/{id}', [ServiceController::class, 'update']);
     Route::post('/service/delete/{id}', [ServiceController::class, 'destroy']);
     Route::post('/service/status-change/{id}', [ServiceController::class, 'changeStatus']);
@@ -85,6 +86,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //  Service Route
     Route::get('/skills', [SkillController::class, 'index']);
     Route::post('/skill/create', [SkillController::class, 'store']);
+    Route::get('/skill/show/{id}', [SkillController::class, 'show']);
     Route::post('/skill/update/{id}', [SkillController::class, 'update']);
     Route::post('/skill/delete/{id}', [SkillController::class, 'destroy']);
     Route::post('/skill/status-change/{id}', [SkillController::class, 'changeStatus']);
@@ -93,6 +95,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //  FAQ Route
     Route::get('/faqs', [FaqController::class, 'index']);
     Route::post('/faq/create', [FaqController::class, 'store']);
+    Route::get('/faq/show/{id}', [FaqController::class, 'show']);
     Route::post('/faq/update/{id}', [FaqController::class, 'update']);
     Route::post('/faq/delete/{id}', [FaqController::class, 'destroy']);
     Route::post('/faq/status-change/{id}', [FaqController::class, 'changeStatus']);
@@ -101,6 +104,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //  Team Route
     Route::get('/teams', [TeamController::class, 'index']);
     Route::post('/team/create', [TeamController::class, 'store']);
+    Route::get('/team/show/{id}', [TeamController::class, 'show']);
     Route::post('/team/update/{id}', [TeamController::class, 'update']);
     Route::post('/team/delete/{id}', [TeamController::class, 'destroy']);
     Route::post('/team/status-change/{id}', [TeamController::class, 'changeStatus']);
@@ -109,6 +113,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //  Project Categories Route
     Route::get('/categories', [ProjectCategoryController::class, 'index']);
     Route::post('/categorie/create', [ProjectCategoryController::class, 'store']);
+    Route::get('/categorie/show/{id}', [ProjectCategoryController::class, 'show']);
     Route::post('/categorie/update/{id}', [ProjectCategoryController::class, 'update']);
     Route::post('/categorie/delete/{id}', [ProjectCategoryController::class, 'destroy']);
     Route::post('/categorie/status-change/{id}', [ProjectCategoryController::class, 'changeStatus']);
@@ -117,6 +122,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //  Porjects Route
     Route::get('/porjects', [ProjectController::class, 'index']);
     Route::post('/porject/create', [ProjectController::class, 'store']);
+    Route::get('/porject/show/{id}', [ProjectController::class, 'show']);
     Route::post('/porject/update/{id}', [ProjectController::class, 'update']);
     Route::post('/porject/delete/{id}', [ProjectController::class, 'destroy']);
     Route::post('/porject/status-change/{id}', [ProjectController::class, 'changeStatus']);
@@ -125,6 +131,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //  Testimonial Route
     Route::get('/testimonials', [TestimonialController::class, 'index']);
     Route::post('/testimonial/create', [TestimonialController::class, 'store']);
+    Route::get('/testimonial/show/{id}', [TestimonialController::class, 'show']);
     Route::post('/testimonial/update/{id}', [TestimonialController::class, 'update']);
     Route::post('/testimonial/delete/{id}', [TestimonialController::class, 'destroy']);
     Route::post('/testimonial/status-change/{id}', [TestimonialController::class, 'changeStatus']);
@@ -133,6 +140,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //  Blog Categories Route
     Route::get('/blog-categories', [BlogCategoryController::class, 'index']);
     Route::post('/blog-categorie/create', [BlogCategoryController::class, 'store']);
+    Route::get('/blog-categorie/show/{id}', [TestimonialController::class, 'show']);
     Route::post('/blog-categorie/update/{id}', [BlogCategoryController::class, 'update']);
     Route::post('/blog-categorie/delete/{id}', [BlogCategoryController::class, 'destroy']);
     Route::post('/blog-categorie/status-change/{id}', [BlogCategoryController::class, 'changeStatus']);

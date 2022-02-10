@@ -106,7 +106,19 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
-        //
+        $project = Project::find($id);
+
+        if ($project) {
+            return response()->json([
+                'message' => 'Project Information',
+                'data' => $project,
+            ], 200);
+        }else{
+            return response()->json([
+                'message' => 'Project Failed',
+            ], 400);
+        }
+        
     }
 
     /**

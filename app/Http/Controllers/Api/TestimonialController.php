@@ -94,7 +94,18 @@ class TestimonialController extends Controller
      */
     public function show($id)
     {
-        //
+        $testimonial = Testimonial::find($id);
+
+        if ($testimonial) {
+            return response()->json([
+                'message' => 'Testimonial Information',
+                'data' => $testimonial,
+            ], 200);
+        }else{
+            return response()->json([
+                'message' => 'Testimonial Failed',
+            ], 400);
+        }
     }
 
     /**

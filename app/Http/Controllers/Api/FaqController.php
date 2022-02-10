@@ -79,7 +79,19 @@ class FaqController extends Controller
      */
     public function show($id)
     {
-        //
+        $faq = Faq::find($id);
+
+        if ($faq) {
+            return response()->json([
+                'message' => 'FAQ Information',
+                'data' => $faq,
+            ], 200);
+        }else{
+            return response()->json([
+                'message' => 'FAQ Failed',
+            ], 400);
+        }
+        
     }
 
     /**
