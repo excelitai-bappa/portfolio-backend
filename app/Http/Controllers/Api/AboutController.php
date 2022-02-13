@@ -36,21 +36,26 @@ class AboutController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show()
     {
-        $about = About::find($id);
+        $about = About::first();
 
         if ($about) {
-            return response()->json([
-                'message' => 'About Information',
-                'data' => $about,
-            ], 200);
-        }else{
-            return response()->json([
-                'message' => 'About Failed',
-            ], 400);
+            return response()->json(
+                [
+                    'message' => 'About Information',
+                    'data' => $about,
+                ],
+                200
+            );
+        } else {
+            return response()->json(
+                [
+                    'message' => 'About Failed',
+                ],
+                400
+            );
         }
-        
     }
 
     /**
@@ -72,11 +77,13 @@ class AboutController extends Controller
             'happy_customers' => 'required|numeric',
         ]);
 
-
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors(),
-            ], 422);
+            return response()->json(
+                [
+                    'errors' => $validator->errors(),
+                ],
+                422
+            );
         }
 
         $about_us_update = About::find($id);
@@ -89,11 +96,14 @@ class AboutController extends Controller
         $about_us_update->service_provide = $request->service_provide;
         $about_us_update->happy_customers = $request->happy_customers;
         $about_us_update->save();
-        
-        return response()->json([
-            'message' => 'About Us Updated Successfull',
-            'data' =>  $about_us_update,
-        ], 200);
+
+        return response()->json(
+            [
+                'message' => 'About Us Updated Successfull',
+                'data' => $about_us_update,
+            ],
+            200
+        );
     }
 
     /**

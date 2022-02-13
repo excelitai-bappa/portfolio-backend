@@ -81,7 +81,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/active-services/{id}', [ServiceController::class, 'activeServiceData']);
 
     //  About Us Route
-    Route::get('/about-us/show/{id}', [ServiceController::class, 'show']);
+    Route::get('/about-us/show', [AboutController::class, 'show']);
     Route::post('/about-us/update/{id}', [AboutController::class, 'update']);
 
     //  Service Route

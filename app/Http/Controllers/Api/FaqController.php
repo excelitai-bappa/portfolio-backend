@@ -20,22 +20,24 @@ class FaqController extends Controller
 
         return response()->json([
             'message' => 'All FAQ List',
-            'data' => $faq
+            'data' => $faq,
         ]);
     }
 
     public function activeFaqData()
     {
-        $active_faq_data = Faq::where('status', 'Active')->orderBy('id', 'DESC')->get();
+        $active_faq_data = Faq::where('status', 'Active')
+            ->orderBy('id', 'DESC')
+            ->get();
 
         if ($active_faq_data) {
             return response()->json([
                 'message' => 'All FAQ List',
-                'data' => $active_faq_data
+                'data' => $active_faq_data,
             ]);
-        }else{
+        } else {
             return response()->json([
-                'message' => 'No Data Availble'
+                'message' => 'No Data Availble',
             ]);
         }
     }
@@ -49,14 +51,17 @@ class FaqController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'question' => 'required',
+            'question' => 'required|unique:faqs', 
             'answer' => 'required',
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors(),
-            ], 422);
+            return response()->json(
+                [
+                    'errors' => $validator->errors(),
+                ],
+                422
+            );
         }
 
         $faq = new Faq();
@@ -64,11 +69,14 @@ class FaqController extends Controller
         $faq->question = $request->question;
         $faq->answer = $request->answer;
         $faq->save();
-        
-        return response()->json([
-            'message' => 'Faq Added Successfull',
-            'data' =>  $faq,
-        ], 200);
+
+        return response()->json(
+            [
+                'message' => 'Faq Added Successfull',
+                'data' => $faq,
+            ],
+            200
+        );
     }
 
     /**
@@ -82,16 +90,21 @@ class FaqController extends Controller
         $faq = Faq::find($id);
 
         if ($faq) {
-            return response()->json([
-                'message' => 'FAQ Information',
-                'data' => $faq,
-            ], 200);
-        }else{
-            return response()->json([
-                'message' => 'FAQ Failed',
-            ], 400);
+            return response()->json(
+                [
+                    'message' => 'FAQ Information',
+                    'data' => $faq,
+                ],
+                200
+            );
+        } else {
+            return response()->json(
+                [
+                    'message' => 'FAQ Failed',
+                ],
+                400
+            );
         }
-        
     }
 
     /**
@@ -104,14 +117,17 @@ class FaqController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'question' => 'required|unique:faqs,name,'.$id,
+            'question' => 'required|unique:faqs,question,' . $id ,
             'answer' => 'required',
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors(),
-            ], 422);
+            return response()->json(
+                [
+                    'errors' => $validator->errors(),
+                ],
+                422
+            );
         }
 
         $faq_update = Faq::find($id);
@@ -119,11 +135,14 @@ class FaqController extends Controller
         $faq_update->question = $request->question;
         $faq_update->answer = $request->answer;
         $faq_update->save();
-        
-        return response()->json([
-            'message' => 'Faq Updated Successfull',
-            'data' =>  $faq_update,
-        ], 200);
+
+        return response()->json(
+            [
+                'message' => 'Faq Updated Successfull',
+                'data' => $faq_update,
+            ],
+            200
+        );
     }
 
     /**
@@ -138,16 +157,22 @@ class FaqController extends Controller
 
         if ($faq) {
             $faq->delete();
-            return response()->json([
-                'message' => 'Faq Deleted Successfull..!!',
-            ], 200);
-        }else{
-            return response()->json([
-                'message' => 'Deleted Failed',
-            ], 400);
+            return response()->json(
+                [
+                    'message' => 'Faq Deleted Successfull..!!',
+                ],
+                200
+            );
+        } else {
+            return response()->json(
+                [
+                    'message' => 'Deleted Failed',
+                ],
+                400
+            );
         }
     }
-    
+
     public function changeStatus(Request $request, $id)
     {
         $faq = Faq::find($id);
@@ -155,15 +180,17 @@ class FaqController extends Controller
         if ($faq->status == 'Active') {
             $faq->status = 'Inactive';
             $faq->save();
-        }elseif($faq->status == 'Inactive'){
+        } elseif ($faq->status == 'Inactive') {
             $faq->status = 'Active';
             $faq->save();
         }
 
-        return response()->json([
-            'message' => 'Status Changed Successfully..!!',
-            'data' => $faq,
-        ], 200);
+        return response()->json(
+            [
+                'message' => 'Status Changed Successfully..!!',
+                'data' => $faq,
+            ],
+            200
+        );
     }
 }
-
