@@ -21,25 +21,28 @@ class TeamController extends Controller
 
         return response()->json([
             'message' => 'All Team List',
-            'data' => $teams
+            'data' => $teams,
         ]);
     }
 
     public function activeTeamData()
     {
-        $active_team = TeamResource::collection(Team::where('status', 'Active')->orderBy('id', 'DESC')->get());
+        $active_team = TeamResource::collection(
+            Team::where('status', 'Active')
+                ->orderBy('id', 'DESC')
+                ->get()
+        );
 
         if ($active_team) {
             return response()->json([
                 'message' => 'All Active Team List',
-                'data' => $active_team
+                'data' => $active_team,
             ]);
-        }else{
+        } else {
             return response()->json([
-                'message' => 'No Data Availble'
+                'message' => 'No Data Availble',
             ]);
         }
-        
     }
 
     /**
@@ -61,9 +64,12 @@ class TeamController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors(),
-            ], 422);
+            return response()->json(
+                [
+                    'errors' => $validator->errors(),
+                ],
+                422
+            );
         }
 
         $team = new Team();
@@ -71,9 +77,9 @@ class TeamController extends Controller
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $extension = $image->extension();
-            $name = time().'.'.$extension;
+            $name = time() . '.' . $extension;
             $image->move(public_path('/upload/teams/'), $name);
-            $path = 'upload/teams/'.$name;
+            $path = 'upload/teams/' . $name;
         }
 
         $team->name = $request->name;
@@ -84,13 +90,15 @@ class TeamController extends Controller
         $team->insta_url = $request->insta_url;
         $team->image = $path;
 
-
         $team->save();
-        
-        return response()->json([
-            'message' => 'Team Added Successfull',
-            'data' =>  $team,
-        ], 200);
+
+        return response()->json(
+            [
+                'message' => 'Team Added Successfull',
+                'data' => $team,
+            ],
+            200
+        );
     }
 
     /**
@@ -101,17 +109,23 @@ class TeamController extends Controller
      */
     public function show($id)
     {
-        $team = Team::find($id);
+        $team = new TeamResource(Team::find($id));
 
         if ($team) {
-            return response()->json([
-                'message' => 'Team Information',
-                'data' => $team,
-            ], 200);
-        }else{
-            return response()->json([
-                'message' => 'Team Failed',
-            ], 400);
+            return response()->json(
+                [
+                    'message' => 'Team Information',
+                    'data' => $team,
+                ],
+                200
+            );
+        } else {
+            return response()->json(
+                [
+                    'message' => 'Team Failed',
+                ],
+                400
+            );
         }
     }
 
@@ -135,15 +149,17 @@ class TeamController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors(),
-            ], 422);
+            return response()->json(
+                [
+                    'errors' => $validator->errors(),
+                ],
+                422
+            );
         }
 
         $team_update = Team::find($id);
 
         if ($request->hasFile('image')) {
-
             $destination = public_path($team_update->image);
             if (file_exists($destination)) {
                 unlink($destination);
@@ -151,9 +167,9 @@ class TeamController extends Controller
 
             $image = $request->file('image');
             $extension = $image->extension();
-            $name = time().'.'.$extension;
+            $name = time() . '.' . $extension;
             $image->move(public_path('/upload/teams/'), $name);
-            $path = 'upload/teams/'.$name;
+            $path = 'upload/teams/' . $name;
         }
 
         $team_update->name = $request->name;
@@ -164,13 +180,15 @@ class TeamController extends Controller
         $team_update->insta_url = $request->insta_url;
         $team_update->image = $path;
 
-
         $team_update->save();
-        
-        return response()->json([
-            'message' => 'Team Updated Successfull',
-            'data' =>  $team_update,
-        ], 200);
+
+        return response()->json(
+            [
+                'message' => 'Team Updated Successfull',
+                'data' => $team_update,
+            ],
+            200
+        );
     }
 
     /**
@@ -184,7 +202,6 @@ class TeamController extends Controller
         $team = Team::find($id);
 
         if ($team) {
-            
             $team->delete();
             $destination = public_path($team->image);
 
@@ -192,16 +209,22 @@ class TeamController extends Controller
                 unlink($destination);
             }
 
-            return response()->json([
-                'message' => 'Team Deleted Successfull..!!',
-            ], 200);
-        }else{
-            return response()->json([
-                'message' => 'Deleted Failed',
-            ], 400);
+            return response()->json(
+                [
+                    'message' => 'Team Deleted Successfull..!!',
+                ],
+                200
+            );
+        } else {
+            return response()->json(
+                [
+                    'message' => 'Deleted Failed',
+                ],
+                400
+            );
         }
     }
-    
+
     public function changeStatus(Request $request, $id)
     {
         $team = Team::find($id);
@@ -209,14 +232,17 @@ class TeamController extends Controller
         if ($team->status == 'Active') {
             $team->status = 'Inactive';
             $team->save();
-        }elseif($team->status == 'Inactive'){
+        } elseif ($team->status == 'Inactive') {
             $team->status = 'Active';
             $team->save();
         }
 
-        return response()->json([
-            'message' => 'Status Changed Successfully..!!',
-            'data' => $team,
-        ], 200);
+        return response()->json(
+            [
+                'message' => 'Status Changed Successfully..!!',
+                'data' => $team,
+            ],
+            200
+        );
     }
 }

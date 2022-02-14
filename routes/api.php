@@ -113,12 +113,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //  Project Categories Route
     Route::get('/categories', [ProjectCategoryController::class, 'index']);
-    Route::post('/categorie/create', [ProjectCategoryController::class, 'store']);
-    Route::get('/categorie/show/{id}', [ProjectCategoryController::class, 'show']);
-    Route::post('/categorie/update/{id}', [ProjectCategoryController::class, 'update']);
-    Route::post('/categorie/delete/{id}', [ProjectCategoryController::class, 'destroy']);
-    Route::post('/categorie/status-change/{id}', [ProjectCategoryController::class, 'changeStatus']);
-    Route::get('/active-categorie/{id}', [ProjectCategoryController::class, 'activeCategoryData']);
+    Route::post('/category/create', [ProjectCategoryController::class, 'store']);
+    Route::get('/category/show/{id}', [ProjectCategoryController::class, 'show']);
+    Route::post('/category/update/{id}', [ProjectCategoryController::class, 'update']);
+    Route::post('/category/delete/{id}', [ProjectCategoryController::class, 'destroy']);
+    Route::post('/category/status-change/{id}', [ProjectCategoryController::class, 'changeStatus']);
+    Route::get('/active-category/{id}', [ProjectCategoryController::class, 'activeCategoryData']);
 
     //  Porjects Route
     Route::get('/porjects', [ProjectController::class, 'index']);
@@ -140,11 +140,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //  Blog Categories Route
     Route::get('/blog-categories', [BlogCategoryController::class, 'index']);
-    Route::post('/blog-categorie/create', [BlogCategoryController::class, 'store']);
-    Route::get('/blog-categorie/show/{id}', [TestimonialController::class, 'show']);
-    Route::post('/blog-categorie/update/{id}', [BlogCategoryController::class, 'update']);
-    Route::post('/blog-categorie/delete/{id}', [BlogCategoryController::class, 'destroy']);
-    Route::post('/blog-categorie/status-change/{id}', [BlogCategoryController::class, 'changeStatus']);
+    Route::post('/blog-category/create', [BlogCategoryController::class, 'store']);
+    Route::get('/blog-category/show/{id}', [BlogCategoryController::class, 'show']);
+    Route::post('/blog-category/update/{id}', [BlogCategoryController::class, 'update']);
+    Route::post('/blog-category/delete/{id}', [BlogCategoryController::class, 'destroy']);
+    Route::post('/blog-category/status-change/{id}', [BlogCategoryController::class, 'changeStatus']);
     Route::get('/active-blog-categories/{id}', [BlogCategoryController::class, 'activeCategoryData']);
 
     //  Blog Route

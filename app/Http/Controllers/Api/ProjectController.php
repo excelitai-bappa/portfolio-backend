@@ -17,26 +17,32 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = ProjectResource::collection(Project::all());
-
+        $projects = ProjectResource::collection(
+            Project::with('project_category')->get()
+        );
+        dd($projects);
         return response()->json([
             'message' => 'All Project List',
-            'data' => $projects
+            'data' => $projects,
         ]);
     }
 
     public function activeProjectData()
     {
-        $active_project = ProjectResource::collection(Project::where('status', 'Active')->orderBy('id', 'DESC')->get());
+        $active_project = ProjectResource::collection(
+            Project::where('status', 'Active')
+                ->orderBy('id', 'DESC')
+                ->get()
+        );
 
         if ($active_project) {
             return response()->json([
                 'message' => 'All Active Project List',
-                'data' => $active_project
+                'data' => $active_project,
             ]);
-        }else{
+        } else {
             return response()->json([
-                'message' => 'No Data Availble'
+                'message' => 'No Data Availble',
             ]);
         }
     }
@@ -58,12 +64,15 @@ class ProjectController extends Controller
             'start_date' => 'required',
             'end_date' => 'required',
             'website_url' => 'required',
-        ]);								
+        ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors(),
-            ], 422);
+            return response()->json(
+                [
+                    'errors' => $validator->errors(),
+                ],
+                422
+            );
         }
 
         $project = new Project();
@@ -71,16 +80,16 @@ class ProjectController extends Controller
         if ($request->hasFile('project_thumbnail')) {
             $image = $request->file('project_thumbnail');
             $extension = $image->extension();
-            $name = 'thumbnail'.time().'.'.$extension;
+            $name = 'thumbnail' . time() . '.' . $extension;
             $image->move(public_path('/upload/projects/'), $name);
-            $project_thumbnail_path = 'upload/projects/'.$name;
+            $project_thumbnail_path = 'upload/projects/' . $name;
         }
         if ($request->hasFile('project_image')) {
             $image = $request->file('project_image');
             $extension = $image->extension();
-            $name = 'project'.time().'.'.$extension;
+            $name = 'project' . time() . '.' . $extension;
             $image->move(public_path('/upload/projects/'), $name);
-            $project_image_path = 'upload/projects/'.$name;
+            $project_image_path = 'upload/projects/' . $name;
         }
         $project->category_id = $request->category_id;
         $project->project_title = $request->project_title;
@@ -91,11 +100,14 @@ class ProjectController extends Controller
         $project->end_date = $request->end_date;
         $project->website_url = $request->website_url;
         $project->save();
-        
-        return response()->json([
-            'message' => 'Project Added Successfull',
-            'data' =>  $project,
-        ], 200);
+
+        return response()->json(
+            [
+                'message' => 'Project Added Successfull',
+                'data' => $project,
+            ],
+            200
+        );
     }
 
     /**
@@ -109,16 +121,21 @@ class ProjectController extends Controller
         $project = Project::find($id);
 
         if ($project) {
-            return response()->json([
-                'message' => 'Project Information',
-                'data' => $project,
-            ], 200);
-        }else{
-            return response()->json([
-                'message' => 'Project Failed',
-            ], 400);
+            return response()->json(
+                [
+                    'message' => 'Project Information',
+                    'data' => $project,
+                ],
+                200
+            );
+        } else {
+            return response()->json(
+                [
+                    'message' => 'Project Failed',
+                ],
+                400
+            );
         }
-        
     }
 
     /**
@@ -142,15 +159,17 @@ class ProjectController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors(),
-            ], 422);
+            return response()->json(
+                [
+                    'errors' => $validator->errors(),
+                ],
+                422
+            );
         }
 
         $project_update = Project::find($id);
 
         if ($request->hasFile('project_thumbnail')) {
-
             $destination = public_path($project_update->project_thumbnail);
             if (file_exists($destination)) {
                 unlink($destination);
@@ -158,12 +177,11 @@ class ProjectController extends Controller
 
             $image = $request->file('project_thumbnail');
             $extension = $image->extension();
-            $name = 'thumbnail'.time().'.'.$extension;
+            $name = 'thumbnail' . time() . '.' . $extension;
             $image->move(public_path('/upload/projects/'), $name);
-            $project_thumbnail_path = 'upload/projects/'.$name;
+            $project_thumbnail_path = 'upload/projects/' . $name;
         }
         if ($request->hasFile('project_image')) {
-
             $destination = public_path($project_update->project_image);
             if (file_exists($destination)) {
                 unlink($destination);
@@ -171,9 +189,9 @@ class ProjectController extends Controller
 
             $image = $request->file('project_image');
             $extension = $image->extension();
-            $name = 'project'.time().'.'.$extension;
+            $name = 'project' . time() . '.' . $extension;
             $image->move(public_path('/upload/projects/'), $name);
-            $project_image_path = 'upload/projects/'.$name;
+            $project_image_path = 'upload/projects/' . $name;
         }
 
         $project_update->category_id = $request->category_id;
@@ -185,11 +203,14 @@ class ProjectController extends Controller
         $project_update->end_date = $request->end_date;
         $project_update->website_url = $request->website_url;
         $project_update->save();
-        
-        return response()->json([
-            'message' => 'Project Updated Successfull',
-            'data' =>  $project_update,
-        ], 200);
+
+        return response()->json(
+            [
+                'message' => 'Project Updated Successfull',
+                'data' => $project_update,
+            ],
+            200
+        );
     }
 
     /**
@@ -203,7 +224,6 @@ class ProjectController extends Controller
         $project = Project::find($id);
 
         if ($project) {
-            
             $project->delete();
             $destination = public_path($project->project_thumbnail);
 
@@ -216,16 +236,22 @@ class ProjectController extends Controller
                 unlink($destination);
             }
 
-            return response()->json([
-                'message' => 'Project Deleted Successfull..!!',
-            ], 200);
-        }else{
-            return response()->json([
-                'message' => 'Deleted Failed',
-            ], 400);
+            return response()->json(
+                [
+                    'message' => 'Project Deleted Successfull..!!',
+                ],
+                200
+            );
+        } else {
+            return response()->json(
+                [
+                    'message' => 'Deleted Failed',
+                ],
+                400
+            );
         }
     }
-    
+
     public function changeStatus(Request $request, $id)
     {
         $project = Project::find($id);
@@ -233,14 +259,17 @@ class ProjectController extends Controller
         if ($project->status == 'Active') {
             $project->status = 'Inactive';
             $project->save();
-        }elseif($project->status == 'Inactive'){
+        } elseif ($project->status == 'Inactive') {
             $project->status = 'Active';
             $project->save();
         }
 
-        return response()->json([
-            'message' => 'Status Changed Successfully..!!',
-            'data' => $project,
-        ], 200);
+        return response()->json(
+            [
+                'message' => 'Status Changed Successfully..!!',
+                'data' => $project,
+            ],
+            200
+        );
     }
 }

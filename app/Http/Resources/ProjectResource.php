@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\ProjectCategory;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProjectResource extends JsonResource
@@ -15,29 +16,31 @@ class ProjectResource extends JsonResource
     public function toArray($request)
     {
         $project_thumbnail = $this->project_thumbnail;
-        if($project_thumbnail){
-            $project_thumbnail = asset('upload/projects/'.$this->image);
-        }else{
-            $project_thumbnail = NULL;
+        if ($project_thumbnail) {
+            $project_thumbnail = asset($this->image);
+        } else {
+            $project_thumbnail = null;
         }
 
         $project_image = $this->project_image;
-        if($project_image){
-            $project_image = asset('upload/projects/'.$this->project_image);
-        }else{
-            $project_image = NULL;
+        if ($project_image) {
+            $project_image = asset($this->project_image);
+        } else {
+            $project_image = null;
         }
+
 
         return [
             'id' => $this->id,
-            'category_id'=> $this->category_id,
-            'project_title'=> $this->project_title,
-            'description'=> $this->description,
-            'project_thumbnail'=> $project_thumbnail,
-            'project_image'=> $project_image,
-            'start_date'=> $this->start_date,
-            'end_date'=> $this->end_date,
-            'website_url'=> $this->website_url,
+            'category_id' => $this->category_id,
+            'project_title' => $this->project_title,
+            'description' => $this->description,
+            'project_thumbnail' => $project_thumbnail,
+            'project_image' => $project_image,
+            'start_date' => $this->start_date,
+            'end_date' => $this->end_date,
+            'website_url' => $this->website_url,
+            'status' => $this->status,
         ];
     }
 }

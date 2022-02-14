@@ -89,16 +89,21 @@ class BlogCategoryController extends Controller
         $blogCategory = BlogCategory::find($id);
 
         if ($blogCategory) {
-            return response()->json([
-                'message' => 'Blog Category Information',
-                'data' => $blogCategory,
-            ], 200);
-        }else{
-            return response()->json([
-                'message' => 'Blog Information Failed',
-            ], 400);
+            return response()->json(
+                [
+                    'message' => 'Blog Category Information',
+                    'data' => $blogCategory,
+                ],
+                200
+            );
+        } else {
+            return response()->json(
+                [
+                    'message' => 'Blog Information Failed',
+                ],
+                400
+            );
         }
-        
     }
 
     /**

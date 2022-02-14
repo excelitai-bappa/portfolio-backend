@@ -94,7 +94,7 @@ class TestimonialController extends Controller
      */
     public function show($id)
     {
-        $testimonial = Testimonial::find($id);
+        $testimonial = new TestimonialResource(Testimonial::find($id));
 
         if ($testimonial) {
             return response()->json([
@@ -192,6 +192,7 @@ class TestimonialController extends Controller
     public function changeStatus(Request $request, $id)
     {
         $testimonial = Testimonial::find($id);
+
 
         if ($testimonial->status == 'Active') {
             $testimonial->status = 'Inactive';

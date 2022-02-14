@@ -15,21 +15,22 @@ class TeamResource extends JsonResource
     public function toArray($request)
     {
         $image = $this->image;
-        if($image){
-            $image = asset('upload/teams/'.$this->image);
-        }else{
-            $image = NULL;
+        if ($image) {
+            $image = asset($this->image);
+        } else {
+            $image = null;
         }
 
         return [
             'id' => $this->id,
-            'name'=> $this->name,
-            'designation'=> $this->designation,
-            'fb_url'=> $this->fb_url,
-            'twitter_url'=> $this->twitter_url,
-            'linkedin_url'=> $this->linkedin_url,
-            'insta_url'=> $this->insta_url,
-            'image'=> $image,
+            'name' => $this->name,
+            'designation' => $this->designation,
+            'fb_url' => $this->fb_url,
+            'twitter_url' => $this->twitter_url,
+            'linkedin_url' => $this->linkedin_url,
+            'insta_url' => $this->insta_url,
+            'image' => $image,
+            'status' => $this->status,
         ];
     }
 }

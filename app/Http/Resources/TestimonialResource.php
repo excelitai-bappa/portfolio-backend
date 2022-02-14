@@ -14,20 +14,20 @@ class TestimonialResource extends JsonResource
      */
     public function toArray($request)
     {
-
         $image = $this->image;
-        if($image){
-            $image = asset('upload/testimonials/'.$this->image);
-        }else{
-            $image = NULL;
+        if ($image) {
+            $image = asset($this->image);
+        } else {
+            $image = null;
         }
 
         return [
             'id' => $this->id,
-            'statement'=> $this->statement,
-            'name'=> $this->name,
-            'designation'=> $this->designation,
-            'image'=> $image,
+            'statement' => $this->statement,
+            'name' => $this->name,
+            'designation' => $this->designation,
+            'image' => $image,
+            'status' => $this->status,
         ];
     }
 }
