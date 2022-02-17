@@ -45,6 +45,27 @@ class TeamController extends Controller
         }
     }
 
+    public function latestActiveMembers()
+    {
+        $active_team = TeamResource::collection(
+            Team::where('status', 'Active')
+                ->orderBy('id', 'DESC')
+                ->take(5)
+                ->get()
+        );
+
+        if ($active_team) {
+            return response()->json([
+                'message' => 'All Active Team List',
+                'data' => $active_team,
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'No Data Availble',
+            ]);
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      *

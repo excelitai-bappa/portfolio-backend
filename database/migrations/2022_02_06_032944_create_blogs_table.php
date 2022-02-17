@@ -16,17 +16,16 @@ class CreateBlogsTable extends Migration
         Schema::create('blogs', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('blog_category_id');
-            $table->unsignedBigInteger('created_by');
+            $table->string('created_by');
             $table->string('title');
             $table->string('slug');
             $table->longText('description');
             $table->string('blog_thumbnail');
-            $table->string('blog_image');
+            // $table->string('blog_image');
             $table->enum('status', ['Active', 'Inactive'])->default('Inactive');
             $table->timestamps();
 
             $table->foreign('blog_category_id')->references('id')->on('blog_categories')->onDelete('cascade');
-            $table->foreign('created_by')->references('id')->on('users');
         });
     }
 

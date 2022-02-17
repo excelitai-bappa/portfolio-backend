@@ -16,7 +16,12 @@ class ContactController extends Controller
      */
     public function index()
     {
-        //
+        $contacts = Contact::latest()->get();
+
+        return response()->json([
+            'message' => 'All Contact List',
+            'data' => $contacts,
+        ]);
     }
 
     /**
@@ -32,27 +37,33 @@ class ContactController extends Controller
             'email' => 'required',
             'subject' => 'required',
             'message' => 'required',
-        ]);								
+        ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors(),
-            ], 422);
+            return response()->json(
+                [
+                    'errors' => $validator->errors(),
+                ],
+                422
+            );
         }
 
         $contact = new Contact();
-        
+
         $contact->name = $request->name;
         $contact->email = $request->email;
         $contact->subject = $request->subject;
         $contact->message = $request->message;
 
         $contact->save();
-        
-        return response()->json([
-            'message' => 'Message Send Successfully Done',
-            'data' =>  $contact,
-        ], 200);
+
+        return response()->json(
+            [
+                'message' => 'Message Send Successfully Done',
+                'data' => $contact,
+            ],
+            200
+        );
     }
 
     /**
@@ -86,6 +97,24 @@ class ContactController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $contact = Contact::find($id);
+
+        if ($contact) {
+            $contact->delete();
+
+            return response()->json(
+                [
+                    'message' => 'Contact Deleted Successfull..!!',
+                ],
+                200
+            );
+        } else {
+            return response()->json(
+                [
+                    'message' => 'Deleted Failed',
+                ],
+                400
+            );
+        }
     }
 }

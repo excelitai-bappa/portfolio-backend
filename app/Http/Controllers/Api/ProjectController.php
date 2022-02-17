@@ -20,7 +20,6 @@ class ProjectController extends Controller
         $projects = ProjectResource::collection(
             Project::with('project_category')->get()
         );
-        dd($projects);
         return response()->json([
             'message' => 'All Project List',
             'data' => $projects,
@@ -29,10 +28,10 @@ class ProjectController extends Controller
 
     public function activeProjectData()
     {
-        $active_project = ProjectResource::collection(
-            Project::where('status', 'Active')
-                ->orderBy('id', 'DESC')
-                ->get()
+        $active_project = ProjectResource::collection(Project::with('project_category')
+            ->where('status', 'Active')
+            ->orderBy('id', 'DESC')
+            ->get()
         );
 
         if ($active_project) {
@@ -60,7 +59,7 @@ class ProjectController extends Controller
             'project_title' => 'required',
             'description' => 'required',
             'project_thumbnail' => 'required|image|mimes:jpeg,png,jpg',
-            'project_image' => 'required|image|mimes:jpeg,png,jpg',
+            // 'project_image' => 'required|image|mimes:jpeg,png,jpg',
             'start_date' => 'required',
             'end_date' => 'required',
             'website_url' => 'required',
@@ -84,18 +83,18 @@ class ProjectController extends Controller
             $image->move(public_path('/upload/projects/'), $name);
             $project_thumbnail_path = 'upload/projects/' . $name;
         }
-        if ($request->hasFile('project_image')) {
-            $image = $request->file('project_image');
-            $extension = $image->extension();
-            $name = 'project' . time() . '.' . $extension;
-            $image->move(public_path('/upload/projects/'), $name);
-            $project_image_path = 'upload/projects/' . $name;
-        }
+        // if ($request->hasFile('project_image')) {
+        //     $image = $request->file('project_image');
+        //     $extension = $image->extension();
+        //     $name = 'project' . time() . '.' . $extension;
+        //     $image->move(public_path('/upload/projects/'), $name);
+        //     $project_image_path = 'upload/projects/' . $name;
+        // }
         $project->category_id = $request->category_id;
         $project->project_title = $request->project_title;
         $project->description = $request->description;
         $project->project_thumbnail = $project_thumbnail_path;
-        $project->project_image = $project_image_path;
+        // $project->project_image = $project_image_path;
         $project->start_date = $request->start_date;
         $project->end_date = $request->end_date;
         $project->website_url = $request->website_url;
@@ -118,7 +117,7 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
-        $project = Project::find($id);
+        $project = new ProjectResource(Project::find($id));
 
         if ($project) {
             return response()->json(
@@ -151,8 +150,6 @@ class ProjectController extends Controller
             'category_id' => 'required',
             'project_title' => 'required',
             'description' => 'required',
-            'project_thumbnail' => 'required|image|mimes:jpeg,png,jpg',
-            'project_image' => 'required|image|mimes:jpeg,png,jpg',
             'start_date' => 'required',
             'end_date' => 'required',
             'website_url' => 'required',
@@ -169,40 +166,31 @@ class ProjectController extends Controller
 
         $project_update = Project::find($id);
 
+        $data = [
+            'category_id' => $request->category_id,
+            'project_title' => $request->project_title,
+            'description' => $request->description,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'website_url' => $request->website_url,
+        ];
+
         if ($request->hasFile('project_thumbnail')) {
             $destination = public_path($project_update->project_thumbnail);
-            if (file_exists($destination)) {
+
+            if ($project_update->project_thumbnail && file_exists($destination)) {
                 unlink($destination);
             }
 
             $image = $request->file('project_thumbnail');
             $extension = $image->extension();
-            $name = 'thumbnail' . time() . '.' . $extension;
+            $name = time() . '.' . $extension;
             $image->move(public_path('/upload/projects/'), $name);
-            $project_thumbnail_path = 'upload/projects/' . $name;
-        }
-        if ($request->hasFile('project_image')) {
-            $destination = public_path($project_update->project_image);
-            if (file_exists($destination)) {
-                unlink($destination);
-            }
-
-            $image = $request->file('project_image');
-            $extension = $image->extension();
-            $name = 'project' . time() . '.' . $extension;
-            $image->move(public_path('/upload/projects/'), $name);
-            $project_image_path = 'upload/projects/' . $name;
+            $path = 'upload/projects/' . $name;
+            $data['project_thumbnail'] = $path;
         }
 
-        $project_update->category_id = $request->category_id;
-        $project_update->project_title = $request->project_title;
-        $project_update->description = $request->description;
-        $project_update->project_thumbnail = $project_thumbnail_path;
-        $project_update->project_image = $project_image_path;
-        $project_update->start_date = $request->start_date;
-        $project_update->end_date = $request->end_date;
-        $project_update->website_url = $request->website_url;
-        $project_update->save();
+        $project_update->update($data);
 
         return response()->json(
             [
@@ -221,7 +209,7 @@ class ProjectController extends Controller
      */
     public function destroy($id)
     {
-        $project = Project::find($id);
+        $project = new ProjectResource(Project::find($id));
 
         if ($project) {
             $project->delete();

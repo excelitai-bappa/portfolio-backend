@@ -21,11 +21,11 @@ class CreateSettingsTable extends Migration
             $table->string('email');
             $table->string('mobile', 11);
             $table->string('address');
+            $table->longText('short_description');
             $table->string('fb_link')->nullable();
             $table->string('twitter_link')->nullable();
             $table->string('linekdin_link')->nullable();
             $table->timestamps();
-            
         });
     }
 

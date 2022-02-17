@@ -20,6 +20,7 @@ class SettingSeeder extends Seeder
 
         Setting::create([
             'name' => 'ERA',
+            'short_description' => 'Far far away, behind the word mountains, far from the countries.',
             'logo' => $faker->imageUrl,
             'favicon' => $faker->imageUrl,
             'email' => 'support@company.com',

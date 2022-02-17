@@ -19,7 +19,7 @@ class BlogController extends Controller
      */
     public function index()
     {
-        $blogs = BlogResource::collection(Blog::all());
+        $blogs = BlogResource::collection(Blog::with('blog_category')->get());
 
         return response()->json([
             'message' => 'All Blog List',
@@ -30,7 +30,8 @@ class BlogController extends Controller
     public function activeBlogData()
     {
         $active_blog = BlogResource::collection(
-            Blog::where('status', 'Active')
+            Blog::with('blog_category')
+                ->where('status', 'Active')
                 ->orderBy('id', 'DESC')
                 ->get()
         );
@@ -60,7 +61,6 @@ class BlogController extends Controller
             'title' => 'required|unique:blogs',
             'description' => 'required',
             'blog_thumbnail' => 'required|image|mimes:jpeg,png,jpg',
-            'blog_image' => 'required|image|mimes:jpeg,png,jpg',
         ]);
 
         if ($validator->fails()) {
@@ -81,25 +81,17 @@ class BlogController extends Controller
             $image->move(public_path('/upload/blog/'), $name);
             $blog_thumbnail_path = 'upload/blog/' . $name;
         }
-        if ($request->hasFile('blog_image')) {
-            $image = $request->file('blog_image');
-            $extension = $image->extension();
-            $name = 'blog' . time() . '.' . $extension;
-            $image->move(public_path('/upload/blog/'), $name);
-            $blog_image_path = 'upload/blog/' . $name;
-        }
         $blog->blog_category_id = $request->blog_category_id;
         $blog->title = $request->title;
         $blog->description = $request->description;
         $blog->blog_thumbnail = $blog_thumbnail_path;
         $blog->created_by = Auth()->user()->name;
-        $blog->blog_image = $blog_image_path;
         $blog->slug = Str::slug($blog->title);
         $blog->save();
 
         return response()->json(
             [
-                'message' => 'Successfully Blog Added',
+                'message' => 'Blog Added Successfull',
                 'data' => $blog,
             ],
             200
@@ -147,8 +139,6 @@ class BlogController extends Controller
             'blog_category_id' => 'required',
             'title' => 'required|unique:blogs,title,' . $id,
             'description' => 'required',
-            'blog_thumbnail' => 'required|image|mimes:jpeg,png,jpg',
-            'blog_image' => 'required|image|mimes:jpeg,png,jpg',
         ]);
 
         if ($validator->fails()) {
@@ -162,39 +152,30 @@ class BlogController extends Controller
 
         $blog_update = Blog::find($id);
 
+        $data = [
+            'blog_category_id' => $request->blog_category_id,
+            'title' => $request->title,
+            'description' => $request->description,
+            'created_by' => Auth()->user()->name,
+            'slug' => Str::slug($blog_update->title),
+        ];
+
         if ($request->hasFile('blog_thumbnail')) {
             $destination = public_path($blog_update->blog_thumbnail);
-            if (file_exists($destination)) {
+
+            if ($blog_update->blog_thumbnail && file_exists($destination)) {
                 unlink($destination);
             }
 
             $image = $request->file('blog_thumbnail');
             $extension = $image->extension();
-            $name = 'blogthumbnail' . time() . '.' . $extension;
-            $image->move(public_path('/upload/blog/'), $name);
-            $blog_thumbnail_path = 'upload/blog/' . $name;
-        }
-        if ($request->hasFile('blog_image')) {
-            $destination = public_path($blog_update->blog_image);
-            if (file_exists($destination)) {
-                unlink($destination);
-            }
-
-            $image = $request->file('blog_image');
-            $extension = $image->extension();
-            $name = 'blog' . time() . '.' . $extension;
-            $image->move(public_path('/upload/blog/'), $name);
-            $blog_image_path = 'upload/blog/' . $name;
+            $name = time() . '.' . $extension;
+            $image->move(public_path('/upload/blogs/'), $name);
+            $path = 'upload/blogs/' . $name;
+            $data['blog_thumbnail'] = $path;
         }
 
-        $blog_update->blog_category_id = $request->blog_category_id;
-        $blog_update->title = $request->title;
-        $blog_update->description = $request->description;
-        $blog_update->blog_thumbnail = $blog_thumbnail_path;
-        $blog_update->blog_image = $blog_image_path;
-        $blog_update->created_by = Auth()->user()->id;
-        $blog_update->slug = Str::slug($blog_update->title);
-        $blog_update->save();
+        $blog_update->update($data);
 
         return response()->json(
             [
@@ -213,7 +194,7 @@ class BlogController extends Controller
      */
     public function destroy($id)
     {
-        $blog = Blog::find($id);
+        $blog = new BlogResource(Blog::find($id));
 
         if ($blog) {
             $blog->delete();

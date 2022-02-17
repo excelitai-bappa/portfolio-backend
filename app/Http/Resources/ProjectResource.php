@@ -17,26 +17,17 @@ class ProjectResource extends JsonResource
     {
         $project_thumbnail = $this->project_thumbnail;
         if ($project_thumbnail) {
-            $project_thumbnail = asset($this->image);
+            $project_thumbnail = asset($this->project_thumbnail);
         } else {
             $project_thumbnail = null;
         }
 
-        $project_image = $this->project_image;
-        if ($project_image) {
-            $project_image = asset($this->project_image);
-        } else {
-            $project_image = null;
-        }
-
-
         return [
             'id' => $this->id,
-            'category_id' => $this->category_id,
+            'category_id' => $this->project_category->name,
             'project_title' => $this->project_title,
             'description' => $this->description,
             'project_thumbnail' => $project_thumbnail,
-            'project_image' => $project_image,
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
             'website_url' => $this->website_url,

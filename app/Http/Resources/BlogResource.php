@@ -14,22 +14,21 @@ class BlogResource extends JsonResource
      */
     public function toArray($request)
     {
-        $image = $this->image;
-        if ($image) {
-            $image = asset($this->image);
+        $blog_thumbnail = $this->blog_thumbnail;
+        if ($blog_thumbnail) {
+            $blog_thumbnail = asset($this->blog_thumbnail);
         } else {
-            $image = null;
+            $blog_thumbnail = null;
         }
 
         return [
             'id' => $this->id,
-            'blog_category_id' => $this->blog_category_id,
+            'blog_category_id' => $this->blog_category->name,
             'created_by' => $this->created_by,
             'title' => $this->title,
             'slug' => $this->slug,
             'description' => $this->description,
-            'blog_thumbnail' => $this->blog_thumbnail,
-            'blog_image' => $image,
+            'blog_thumbnail' => $blog_thumbnail,
             'status' => $this->status,
         ];
     }

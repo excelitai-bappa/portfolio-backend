@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\FaqController;
 use App\Http\Controllers\Api\ProjectCategoryController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\ServiceController;
+use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\SkillController;
 use App\Http\Controllers\Api\SliderController;
 use App\Http\Controllers\Api\SubscribeController;
@@ -69,7 +70,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/slider/update/{id}', [SliderController::class, 'update']);
     Route::post('/slider/delete/{id}', [SliderController::class, 'destroy']);
     Route::post('/slider/status-change/{id}', [SliderController::class, 'changeStatus']);
-    Route::get('/active-sliders/{id}', [SliderController::class, 'activeSliderData']);
+    Route::get('/active-sliders', [SliderController::class, 'activeSliderData']);
 
     //  Service Route
     Route::get('/services', [ServiceController::class, 'index']);
@@ -78,7 +79,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/service/update/{id}', [ServiceController::class, 'update']);
     Route::post('/service/delete/{id}', [ServiceController::class, 'destroy']);
     Route::post('/service/status-change/{id}', [ServiceController::class, 'changeStatus']);
-    Route::get('/active-services/{id}', [ServiceController::class, 'activeServiceData']);
+    Route::get('/active-services', [ServiceController::class, 'activeServiceData']);
 
     //  About Us Route
     Route::get('/about-us/show', [AboutController::class, 'show']);
@@ -91,7 +92,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/skill/update/{id}', [SkillController::class, 'update']);
     Route::post('/skill/delete/{id}', [SkillController::class, 'destroy']);
     Route::post('/skill/status-change/{id}', [SkillController::class, 'changeStatus']);
-    Route::get('/active-skills/{id}', [SkillController::class, 'activeSkillData']);
+    Route::get('/active-skills', [SkillController::class, 'activeSkillData']);
 
     //  FAQ Route
     Route::get('/faqs', [FaqController::class, 'index']);
@@ -100,16 +101,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/faq/update/{id}', [FaqController::class, 'update']);
     Route::post('/faq/delete/{id}', [FaqController::class, 'destroy']);
     Route::post('/faq/status-change/{id}', [FaqController::class, 'changeStatus']);
-    Route::get('/active-faqs/{id}', [FaqController::class, 'activeFaqData']);
+    Route::get('/active-faqs', [FaqController::class, 'activeFaqData']);
 
     //  Team Route
     Route::get('/teams', [TeamController::class, 'index']);
+    Route::get('/teams/active-latest-members', [TeamController::class, 'latestActiveMembers']);
     Route::post('/team/create', [TeamController::class, 'store']);
     Route::get('/team/show/{id}', [TeamController::class, 'show']);
     Route::post('/team/update/{id}', [TeamController::class, 'update']);
     Route::post('/team/delete/{id}', [TeamController::class, 'destroy']);
     Route::post('/team/status-change/{id}', [TeamController::class, 'changeStatus']);
-    Route::get('/active-teams/{id}', [TeamController::class, 'activeTeamData']);
+    Route::get('/active-teams', [TeamController::class, 'activeTeamData']);
 
     //  Project Categories Route
     Route::get('/categories', [ProjectCategoryController::class, 'index']);
@@ -118,16 +120,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/category/update/{id}', [ProjectCategoryController::class, 'update']);
     Route::post('/category/delete/{id}', [ProjectCategoryController::class, 'destroy']);
     Route::post('/category/status-change/{id}', [ProjectCategoryController::class, 'changeStatus']);
-    Route::get('/active-category/{id}', [ProjectCategoryController::class, 'activeCategoryData']);
+    Route::get('/active-project-category', [ProjectCategoryController::class, 'activeCategoryData']);
 
     //  Porjects Route
-    Route::get('/porjects', [ProjectController::class, 'index']);
-    Route::post('/porject/create', [ProjectController::class, 'store']);
-    Route::get('/porject/show/{id}', [ProjectController::class, 'show']);
-    Route::post('/porject/update/{id}', [ProjectController::class, 'update']);
-    Route::post('/porject/delete/{id}', [ProjectController::class, 'destroy']);
-    Route::post('/porject/status-change/{id}', [ProjectController::class, 'changeStatus']);
-    Route::get('/active-projects/{id}', [ProjectCategoryController::class, 'activeProjectData']);
+    Route::get('/projects', [ProjectController::class, 'index']);
+    Route::post('/project/create', [ProjectController::class, 'store']);
+    Route::get('/project/show/{id}', [ProjectController::class, 'show']);
+    Route::post('/project/update/{id}', [ProjectController::class, 'update']);
+    Route::post('/project/delete/{id}', [ProjectController::class, 'destroy']);
+    Route::post('/project/status-change/{id}', [ProjectController::class, 'changeStatus']);
+    Route::get('/active-projects', [ProjectController::class, 'activeProjectData']);
 
     //  Testimonial Route
     Route::get('/testimonials', [TestimonialController::class, 'index']);
@@ -145,17 +147,24 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/blog-category/update/{id}', [BlogCategoryController::class, 'update']);
     Route::post('/blog-category/delete/{id}', [BlogCategoryController::class, 'destroy']);
     Route::post('/blog-category/status-change/{id}', [BlogCategoryController::class, 'changeStatus']);
-    Route::get('/active-blog-categories/{id}', [BlogCategoryController::class, 'activeCategoryData']);
+    Route::get('/active-blog-categories', [BlogCategoryController::class, 'activeCategoryData']);
 
     //  Blog Route
     Route::get('/blogs', [BlogController::class, 'index']);
     Route::post('/blog/create', [BlogController::class, 'store']);
+    Route::get('/blog/show/{id}', [BlogController::class, 'show']);
     Route::post('/blog/update/{id}', [BlogController::class, 'update']);
     Route::post('/blog/delete/{id}', [BlogController::class, 'destroy']);
     Route::post('/blog/status-change/{id}', [BlogController::class, 'changeStatus']);
-    Route::get('/active-blog/{id}', [BlogController::class, 'activeCategoryData']);
+    Route::get('/active-blog', [BlogController::class, 'activeCategoryData']);
 
+    //  Setting Route
+    Route::get('/setting/show', [SettingController::class, 'show']);
+    Route::post('/setting/update/{id}', [SettingController::class, 'update']);
 
+    //  Contact Route
+    Route::get('/contacts', [ContactController::class, 'index']);
+    Route::post('/contact/delete/{id}', [ContactController::class, 'destroy']);
 
 });
 
