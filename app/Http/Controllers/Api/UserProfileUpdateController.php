@@ -51,67 +51,27 @@ class UserProfileUpdateController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'phone' => 'required',
-            'profile_picture' => 'image|mimes:jpeg,png,jpg',	
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors(),
-            ], 422);
-        }
-
-        $profile_update = User::find(Auth::guard('sanctum')->user()->id);
-
-        if ($request->hasFile('profile_picture')) {
-
-            $destination = public_path($profile_update->profile_picture);
-            
-            if (file_exists($destination)) {
-                unlink($destination);
-            }
-
-            $image = $request->file('profile_picture');
-            $extension = $image->extension();
-            $name = 'profile'.time().'.'.$extension;
-            $image->move(public_path('/upload/users_images/'), $name);
-            $path = 'upload/users_images/'.$name;
-        }
-
-        $profile_update->name = $request->name;
-        $profile_update->phone = $request->phone;
-        $profile_update->profile_picture = $path;
-
-
-        $profile_update->save();
-        
-        return response()->json([
-            'message' => 'Profile Updated Successfull',
-            'data' =>  $profile_update,
-        ], 200);
-    }
+   
 
     public function ChangePassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'oldpassword' => 'required',
-            'password' => 'required|confirmed',	
+            'password' => 'required|confirmed',
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors(),
-            ], 422);
+            return response()->json(
+                [
+                    'errors' => $validator->errors(),
+                ],
+                422
+            );
         }
 
         $hashedPassword = Auth::guard('sanctum')->user()->password;
         $id = Auth::guard('sanctum')->user()->id;
         if (Hash::check($request->oldpassword, $hashedPassword)) {
-
             $user = User::find($id);
             $user->password = Hash::make($request->password);
             $user->save();

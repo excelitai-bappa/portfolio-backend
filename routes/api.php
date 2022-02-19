@@ -58,9 +58,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware('auth:sanctum')->group(function () {
      
     // Profile Update route
-    Route::post('/user/profile/update/{id}', [UserProfileUpdateController::class, 'profile_update']);
     Route::post('/user/logout', [AuthController::class, 'logout']);
     Route::get('/user/profile', [AuthController::class, 'show']);
+    Route::post('/user/profile/update/{id}', [AuthController::class, 'update']);
 
     
     //  Header Route
